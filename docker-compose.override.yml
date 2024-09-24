@@ -1,0 +1,4 @@
+services:
+  satisfactory-server:
+    volumes:
+      - '$VOLUME_CONFIG:/config'
