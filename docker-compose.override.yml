@@ -2,3 +2,7 @@ services:
   satisfactory-server:
     volumes:
       - '$VOLUME_CONFIG:/config'
+  environment:
+      - AUTOSAVENUM=2520
+      - AUTOSAVEINTERVAL=15
+      - MAXPLAYERS=8
