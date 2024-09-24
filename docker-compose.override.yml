@@ -5,4 +5,4 @@ services:
     environment:
       - AUTOSAVENUM=2520
       - AUTOSAVEINTERVAL=15
-      - MAXPLAYERS=8
+      - MAXPLAYERS=4
