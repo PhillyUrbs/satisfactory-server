@@ -2,7 +2,7 @@ services:
   satisfactory-server:
     volumes:
       - /home/phil/satisfactory-server:/config
-  environment:
-      - AUTOSAVENUM=2520
-      - AUTOSAVEINTERVAL=15
-      - MAXPLAYERS=8
+    environment:
+        - AUTOSAVENUM=2520
+        - AUTOSAVEINTERVAL=15
+        - MAXPLAYERS=8
