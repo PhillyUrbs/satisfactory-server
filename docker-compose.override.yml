@@ -6,3 +6,9 @@ services:
       - AUTOSAVENUM=2520
       - AUTOSAVEINTERVAL=15
       - MAXPLAYERS=4
+    deploy:
+      resources:
+        limits:
+          memory: 16G
+        reservations:
+          memory: 12G
