@@ -6,6 +6,8 @@ services:
       - AUTOSAVENUM=2520
       - AUTOSAVEINTERVAL=15
       - MAXPLAYERS=4
+    healthcheck:
+      start_period: 300s
     deploy:
       resources:
         limits:
