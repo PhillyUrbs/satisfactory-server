@@ -5,7 +5,7 @@ services:
     environment:
       - AUTOSAVENUM=2520
       - AUTOSAVEINTERVAL=15
-      - MAXPLAYERS=4
+      - MAXPLAYERS=5
     deploy:
       resources:
         limits:
