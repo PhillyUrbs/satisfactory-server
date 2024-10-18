@@ -102,7 +102,7 @@ wolveix/satisfactory-server:latest
 * For the environment (`--env`) variables please
   see [here](https://github.com/wolveix/satisfactory-server#environment-variables)
 * `--memory-reservation=4G` -> Reserves 4GB RAM from the host for the container's use
-* `--memory 8G` -> Restricts the container to 6GB RAM
+* `--memory 8G` -> Restricts the container to 8GB RAM
 * `--publish` -> Specifies the ports that the container exposes<br>
 
 </details>
@@ -129,12 +129,6 @@ services:
       - ROOTLESS=false
       - STEAMBETA=false
     restart: unless-stopped
-    healthcheck:
-      test: [ "CMD", "bash", "/healthcheck.sh" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 120s
     deploy:
       resources:
         limits:
