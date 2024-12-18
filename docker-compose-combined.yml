@@ -1,0 +1,28 @@
+services:
+  satisfactory-server:
+    container_name: 'satisfactory-server'
+    hostname: 'satisfactory-server'
+    image: 'wolveix/satisfactory-server:latest'
+    ports:
+      - '7777:7777/udp'
+      - '7777:7777/tcp'
+    volumes:
+      - /home/phil/satisfactory-server/server-config:/config
+    environment:
+      - MAXPLAYERS=4
+      - PGID=1000
+      - PUID=1000
+      - ROOTLESS=false
+      - STEAMBETA=false
+      - AUTOSAVENUM=2520
+      - AUTOSAVEINTERVAL=15
+      - MAXPLAYERS=5
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 16G
+        reservations:
+          memory: 12G
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
