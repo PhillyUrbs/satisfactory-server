@@ -3,8 +3,8 @@ services:
     volumes:
       - /home/phil/satisfactory-server/server-config:/config
     ports:
-      - '7777:7777/udp'
       - '7777:7777/tcp'
+      - '7777:7777/udp'
     environment:
       - AUTOSAVENUM=2520
       - AUTOSAVEINTERVAL=15
