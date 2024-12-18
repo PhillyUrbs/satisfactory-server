@@ -4,6 +4,7 @@ services:
       - /home/phil/satisfactory-server/server-config:/config
     ports:
       - '7777:7777/tcp'
+      - '1:1/tcp'
       - '7777:7777/udp'
     environment:
       - AUTOSAVENUM=2520
