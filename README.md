@@ -12,36 +12,7 @@ server.
 
 ### [Experiencing issues? Check our Troubleshooting FAQ wiki!](https://github.com/wolveix/satisfactory-server/wiki/Troubleshooting-FAQ)
 
-## Upgrading for Satisfactory 1.0
-
-Satisfactory is finally out of early access! 🎉
-
-If you're not new here and looking to upgrade your setup, here's what you need to do:
-
-- Upgrade your local Docker image `docker pull wolveix/satisfactory-server:latest`
-- Change your ports from:
-
-```
- - '7777:7777/udp'
- - '15000:15000/udp'
- - '15777:15777/udp'
-```
-
-- To the new ports:
-
-```
- - '7777:7777/tcp'
- - '7777:7777/udp'
-```
-
-- Ensure BOTH of the new ports are explicitly allowed through your firewall/port forwarded as needed.
-
-If you're experiencing API connectivity issues, your issue is that you haven't completed one of these two steps. If
-you're seeing a `EADDRINUSE` log message, Coffee Stain confirmed that it does **not** matter. Same applies to the
-self-signed certificate log message. For more information,
-see [the original issue from launch](https://github.com/wolveix/satisfactory-server/issues/260).
-
-Enjoy 1.0! 🎉
+### [Upgrading for Satisfactory 1.0](https://github.com/wolveix/satisfactory-server/wiki/Upgrading-for-1.0)
 
 ## Setup
 
@@ -191,10 +162,10 @@ helm install satisfactory k8s-at-home/satisfactory -f values.yaml
 | `MAXOBJECTS`            | `2162688` | set the object limit for your server                      |
 | `MAXPLAYERS`            |    `4`    | set the player limit for your server                      |
 | `MAXTICKRATE`           |   `30`    | set the maximum sim tick rate for your server             |
+| `MULTIHOME`             |   `::`    | set the server's listening interface (usually not needed) |
 | `PGID`                  |  `1000`   | set the group ID of the user the server will run as       |
 | `PUID`                  |  `1000`   | set the user ID of the user the server will run as        |
 | `SERVERGAMEPORT`        |  `7777`   | set the game's port                                       |
-| `SERVERIP`              | `0.0.0.0` | set the game's ip (usually not needed)                    |
 | `SERVERSTREAMING`       |  `true`   | toggle whether the game utilizes asset streaming          |
 | `SKIPUPDATE`            |  `false`  | avoid updating the game on container start/restart        |
 | `STEAMBETA`             |  `false`  | set experimental game version                             |
@@ -245,16 +216,61 @@ really get the best out of multiplayer:
 - Right-click each of the 3 config files (Engine.ini, Game.ini, Scalability.ini)
 - Go to Properties > tick Read-only under the attributes
 
-## Rootless
+## Running as Non-Root User
 
-If you'd prefer to run the container as a non-root user, just pass your preferred user to the container using Docker's
-own user implementation (e.g. `--user 1000:1000`). Do note that the container will print a warning for this, and this
-may cause permissions-related issues.
+By default, the container runs with root privileges but executes Satisfactory under `1000:1000`. If your host's user and
+group IDs are `1000:1000`, you can run the entire container as non-root using Docker's `--user` directive. For different
+user/group IDs, you'll need to clone and rebuild the image with your specific UID/GID:
+
+### Building Non-Root Image
+
+1. Clone the repository:
+
+```shell
+git clone https://github.com/wolveix/satisfactory-server.git
+```
+
+2. Create a docker-compose.yml file with your desired UID/GID as build args (note that the `PUID` and `PGID` environment
+   variables will no longer be needed):
+
+```yaml
+services:
+  satisfactory-server:
+    container_name: 'satisfactory-server'
+    hostname: 'satisfactory-server'
+    build:
+      context: .
+      args:
+        UID: 1001  # Your desired UID
+        GID: 1001  # Your desired GID
+    user: "1001:1001"  # Must match UID:GID above
+    ports:
+      - '7777:7777/udp'
+      - '7777:7777/tcp'
+    volumes:
+      - './satisfactory-server:/config'
+    environment:
+      - MAXPLAYERS=4
+      - STEAMBETA=false
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+        reservations:
+          memory: 4G
+```
+
+3. Build and run the container:
+
+```shell
+docker compose up -d
+```
 
 ## Known Issues
 
-- The container is run as `root`. This is pretty common for Docker images, but is bad practice for security reasons.
-  This change was made to address [permissions issues](https://github.com/wolveix/satisfactory-server/issues/44)
+- The container is run as `root` by default. You can provide your own user and group using Docker's `--user` directive;
+  however, if your proposed user and group aren't `1000:1000`, you'll need to rebuild the image (as outlined above).
 - The server log will show various errors; most of which can be safely ignored. As long as the container continues to
   run and your log looks similar to the example log, the server should be functioning just
   fine: [example log](https://github.com/wolveix/satisfactory-server/blob/main/server.log)
